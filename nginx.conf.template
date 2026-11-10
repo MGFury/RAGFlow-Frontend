@@ -1,0 +1,19 @@
+server {
+  listen 80;
+  root /usr/share/nginx/html;
+  index index.html;
+
+  # Forward the browser's /ragflow/* calls to RAGFlow (it sends no CORS headers).
+  location /ragflow/ {
+    proxy_pass ${RAGFLOW_UPSTREAM}/;
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_buffering off;          # keep streamed answers streaming
+    proxy_read_timeout 300s;
+    client_max_body_size 0;       # file uploads
+  }
+
+  location / {
+    try_files $uri /index.html;
+  }
+}

@@ -1,0 +1,110 @@
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/heebo";
+@import "@fontsource-variable/geist-mono";
+@import "tailwindcss";
+
+/* One accent. Green means "primary action" or "grounded in your files". Neutrals are tinted toward it. */
+:root {
+  --bg: #06080a; --canvas: #0d110e; --canvas-2: #121713; --surface: #161c17; --surface-2: #1d241e;
+  --line: rgba(226, 244, 222, 0.09); --line-strong: rgba(226, 244, 222, 0.17);
+  --text: #f1f5ef; --text-2: #a0ad9d; --text-3: #76837a;
+  --acid: #46f523; --acid-ink: #04120a;
+  --accent-text: #6dff4f; --accent-wash: rgba(70, 245, 35, 0.13); --accent-wash-strong: rgba(70, 245, 35, 0.24); --accent-ring: rgba(70, 245, 35, 0.5);
+  --glass: rgba(20, 26, 22, 0.55); --glass-edge: rgba(236, 255, 232, 0.14);
+  --shadow-float: 0 10px 28px -12px rgba(0, 0, 0, 0.55);
+  --paper: #f6f8f4; --paper-text: #2b3529; --paper-head: #0f160e; --paper-mute: #8a9587; --paper-line: rgba(15, 30, 12, 0.1);
+  --danger: #ff6b5e;
+  color-scheme: dark;
+}
+:root[data-theme="light"] {
+  --bg: #e6eae3; --canvas: #fbfcfa; --canvas-2: #f4f7f2; --surface: #ffffff; --surface-2: #eef2ec;
+  --line: rgba(14, 28, 12, 0.09); --line-strong: rgba(14, 28, 12, 0.17);
+  --text: #0c120b; --text-2: #4b574a; --text-3: #627060;
+  --accent-text: #0a6b10; --accent-wash: rgba(20, 160, 0, 0.1); --accent-wash-strong: rgba(30, 200, 10, 0.2); --accent-ring: rgba(20, 170, 0, 0.5);
+  --glass: rgba(255, 255, 255, 0.58); --glass-edge: rgba(255, 255, 255, 0.95);
+  --shadow-float: 0 10px 28px -14px rgba(30, 50, 40, 0.28);
+  --paper: #ffffff; --danger: #c4281a;
+  color-scheme: light;
+}
+
+@theme inline {
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter Variable", "Heebo Variable", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, "SF Mono", Menlo, monospace;
+  --color-bg: var(--bg); --color-canvas: var(--canvas); --color-canvas2: var(--canvas-2);
+  --color-surface: var(--surface); --color-surface2: var(--surface-2);
+  --color-line: var(--line); --color-line2: var(--line-strong);
+  --color-ink: var(--text); --color-ink2: var(--text-2); --color-ink3: var(--text-3);
+  --color-acid: var(--acid); --color-acidink: var(--acid-ink);
+  --color-accent: var(--accent-text); --color-wash: var(--accent-wash); --color-wash2: var(--accent-wash-strong); --color-ring: var(--accent-ring);
+  --color-danger: var(--danger);
+  --color-paper: var(--paper); --color-papertext: var(--paper-text); --color-paperhead: var(--paper-head); --color-papermute: var(--paper-mute); --color-paperline: var(--paper-line);
+  --radius-md: 14px; --radius-lg: 20px; --radius-xl: 26px;
+  --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-sheet: cubic-bezier(0.32, 0.72, 0, 1);
+  --animate-panel-in: panel-in 260ms var(--ease-out-strong);
+  --animate-sheet-in: sheet-in 340ms var(--ease-sheet);
+  --animate-rise: rise 320ms var(--ease-out-strong) both;
+  --animate-scan: scan 1.3s cubic-bezier(0.77, 0, 0.175, 1) infinite;
+  --animate-pulse-soft: pulse-soft 1.4s ease-in-out infinite;
+}
+
+@custom-variant light (&:where([data-theme="light"], [data-theme="light"] *));
+
+@keyframes panel-in { from { opacity: 0; transform: translateX(calc(14px * var(--dir, 1))); } to { opacity: 1; transform: none; } }
+@keyframes sheet-in { from { transform: translateY(100%); } to { transform: none; } }
+@keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes scan { from { background-position: -45% 0; } to { background-position: 145% 0; } }
+@keyframes pulse-soft { 50% { opacity: 0.35; } }
+
+:root { --dir: 1; }
+:root[dir="rtl"] { --dir: -1; }
+
+@layer base {
+  html, body, #root { height: 100%; }
+  body { @apply bg-bg font-sans text-sm text-ink antialiased overflow-hidden; text-rendering: optimizeLegibility; }
+  html[lang="he"] * { letter-spacing: 0 !important; } /* negative tracking breaks Hebrew letterforms */
+  button { cursor: pointer; }
+  :focus-visible { outline: 2px solid var(--accent-ring); outline-offset: 2px; border-radius: 10px; }
+  ::selection { background: var(--accent-wash-strong); }
+  * { scrollbar-width: thin; scrollbar-color: var(--line-strong) transparent; }
+  bdi { unicode-bidi: isolate; }
+}
+
+/* Floating functional layer: the only place glass is used. */
+@utility glass {
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(28px) saturate(1.7);
+  backdrop-filter: blur(28px) saturate(1.7);
+  box-shadow: var(--shadow-float), inset 0 0.5px 0 var(--glass-edge), inset 0 0 0 0.5px var(--glass-edge);
+}
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  .glass { background: var(--canvas-2); -webkit-backdrop-filter: none; backdrop-filter: none; box-shadow: 0 0 0 1px var(--line-strong); }
+}
+/* Pressable: every button answers the press. */
+@utility press { transition: transform 140ms var(--ease-out-strong), background-color 160ms ease, color 160ms ease, filter 160ms ease, box-shadow 160ms ease; &:active { transform: scale(0.97); } }
+@utility hide-scroll { scrollbar-width: none; &::-webkit-scrollbar { display: none; } }
+
+/* Highlighter on paper: the signature. */
+mark.hl { background: rgba(100, 255, 60, 0.5); color: var(--paper-head); padding: 1px 2px; margin: 0 -2px; border-radius: 3px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+::highlight(find) { background: rgba(255, 214, 10, 0.6); color: #111; }
+
+/* Rendered markdown (answers and .md files) */
+.prose-chat { line-height: 1.75; }
+.prose-chat > * + * { margin-top: 0.75rem; }
+.prose-chat ul { list-style: disc; padding-inline-start: 1.25rem; display: grid; gap: 0.5rem; }
+.prose-chat ol { list-style: decimal; padding-inline-start: 1.25rem; display: grid; gap: 0.5rem; }
+.prose-chat li::marker { color: var(--text-3); }
+.prose-chat strong { font-weight: 650; }
+.prose-chat code { font-family: var(--font-mono); font-size: 0.9em; background: var(--surface-2); padding: 0.1em 0.35em; border-radius: 6px; }
+.prose-chat pre { background: var(--surface-2); padding: 0.75rem 1rem; border-radius: 12px; overflow-x: auto; direction: ltr; }
+.prose-chat a { color: var(--accent-text); text-decoration: underline; text-underline-offset: 3px; }
+.prose-chat h1, .prose-chat h2, .prose-chat h3 { font-weight: 650; margin-top: 1.25rem; }
+.prose-chat table { border-collapse: collapse; } .prose-chat th, .prose-chat td { border: 1px solid var(--line-strong); padding: 0.35rem 0.6rem; text-align: start; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
+
+/* docx-preview: pages float on the canvas like the PDF pages do */
+.docx-host .docx-wrapper { background: transparent !important; padding: 0 !important; }
+.docx-host .docx-wrapper > section.docx { box-shadow: 0 18px 40px -16px rgba(0, 0, 0, 0.55); margin-bottom: 22px !important; color: #2b3529; }

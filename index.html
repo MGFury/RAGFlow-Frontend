@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="he" dir="rtl" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="description" content="שאול: שיחה עם המסמכים שלכם, עם המקור לכל תשובה." />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <title>שאול</title>
+    <script>
+      // Set theme and language before first paint to avoid a flash.
+      try {
+        var s = JSON.parse(localStorage.getItem("shaul") || "{}").state || {};
+        var d = document.documentElement;
+        d.dataset.theme = s.theme || (matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+        d.lang = s.lang || "he";
+        d.dir = d.lang === "he" ? "rtl" : "ltr";
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
