@@ -7,7 +7,11 @@ function required(name: string): string {
   return v;
 }
 
+import { resolve } from "node:path";
+
 export const config = {
+  /** Folder with the built front end. Defaults to ../web next to the compiled server (the standalone bundle layout). */
+  webDir: process.env.WEB_DIR?.trim() || resolve(import.meta.dirname, "../web"),
   ragflowUrl: required("RAGFLOW_URL").replace(/\/+$/, ""),
   apiKey: required("RAGFLOW_API_KEY"),
   datasetId: process.env.DATASET_ID?.trim() || "",

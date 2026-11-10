@@ -1,10 +1,14 @@
 import express, { type NextFunction, type Request, type Response } from "express";
 import cors from "cors";
 import { config } from "./config.js";
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import { RagflowError, listDocuments, ping } from "./ragflow.js";
+import { ragflowProxy } from "./proxy.js";
 
 const app = express();
 app.use(cors({ origin: config.corsOrigins }));
+app.use("/ragflow", ragflowProxy); // before the JSON parser: bodies are streamed through untouched
 app.use(express.json());
 
 /** Is the server up, and can it reach RAGFlow with the configured key? */
@@ -39,6 +43,13 @@ app.get("/api/documents/:id", async (req, res) => {
   if (!documents[0]) return res.status(404).json({ error: "Document not found" });
   res.json(documents[0]);
 });
+
+// The built front end (if present): static files, and index.html for any other page route.
+const webDir = config.webDir;
+if (existsSync(join(webDir, "index.html"))) {
+  app.use(express.static(webDir));
+  app.use((req, res, next) => (req.method === "GET" && !req.path.startsWith("/api/") ? res.sendFile(join(webDir, "index.html")) : next()));
+}
 
 app.use((_req, res) => res.status(404).json({ error: "Not found" }));
 

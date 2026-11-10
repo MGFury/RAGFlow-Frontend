@@ -35,14 +35,32 @@ npm run dev
 
 The mock (`mock/server.mjs`) is for development only. Use any API key.
 
-## Production
+## Production and offline machines
+
+The Node server in `backend/` serves the built web app and forwards `/ragflow/*` to RAGFlow (streaming answers and file
+uploads pass straight through), so one process is all you run.
+
+**Build the standalone package (Windows x64, no installs needed on the target):**
+
+```bash
+npm run build && (cd backend && npm run build)
+# then assemble: node.exe + backend/dist -> app/ + prod node_modules -> app/node_modules + dist -> web/
+```
+
+The ready-made layout is described in the package's own `README.txt`: unzip, run `start.bat`, open `http://localhost:3001`.
+
+**Docker:**
 
 ```bash
 docker build -t shaul .
-docker run -p 8080:80 -e RAGFLOW_UPSTREAM=http://ragflow-host:9380 shaul
+docker run -p 3001:3001 -e RAGFLOW_URL=http://ragflow-host:9380 -e RAGFLOW_API_KEY=ragflow-xxxx shaul
+# for a machine without internet:
+docker save shaul -o shaul-image.tar        # copy the tar over, then:
+docker load -i shaul-image.tar
 ```
 
-nginx serves the static build and forwards `/ragflow/*` to `RAGFLOW_UPSTREAM` (`nginx.conf.template`).
+**Develop offline:** the source can be carried with its `node_modules` (platform-specific: build tools ship native
+binaries, so use the same OS and CPU as where it was installed).
 
 ## What uses which RAGFlow endpoint
 
